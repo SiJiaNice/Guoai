@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+       PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+       "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="dao.UserMapper">
+
+   <select id="getUserById" resultType="pojo.User">
+       select
+       `id` as `id`,
+       `userName` as `userName`,
+       `password` as `password`,
+       `realName` as `realName`
+       from `users`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id`=#{id}
+           </if>
+       </trim>
+   </select>
+
+   <select id="getUserListByMap" resultType="pojo.User"
+           parameterType="java.util.Map">
+           select
+           `id` as `id`,
+           `userName` as `userName`,
+           `password` as `password`,
+     	   `realName` as `realName`
+           from `users`
+       <trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="userName != null and userName!=''">
+               and `userName` like CONCAT('%',#{userName},'%') 
+           </if>
+           <if test="password != null and password!=''">
+               and `password` = #{password}
+           </if>
+           <if test="realName != null and realName=''">
+               and `realName` = #{realName}
+           </if>
+       </trim>
+   </select>
+   
+   <select id="getUserRecordCount" resultType="int" parameterType="java.util.Map">
+			select count(1) from `users`
+		<trim prefix="where" prefixOverrides="and | or">
+           <if test="id != null">
+               and `id` = #{id} 
+           </if>
+           <if test="userName != null and username!=''">
+               and `userName` like CONCAT('%',#{userName},'%') 
+           </if>
+           <if test="password != null and password!=''">
+               and `password` like CONCAT('%',#{password},'%') 
+           </if>
+            <if test="realName != null and realName=''">
+               and `realName` like COUNT('%', #{realName},'%')
+           </if>
+       </trim>
+   </select>
+
+   <insert id="insertUser" parameterType="pojo.User">
+       insert into `users`(
+              		`id`,
+              		`userName`,
+              		`password`,
+              		`realName`
+              		
+       )
+       values(
+              		#{id},
+              		#{userName},
+              		#{password},
+              		#{realName}
+              		
+       )
+   </insert>
+
+</mapper>
